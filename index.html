@@ -1,283 +1,112 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Finlogy Finance - financial calculators, forex, investments and records.">
-  <title>Finlogy Finance | Smart Money Tools</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Finlogy Finance — Interest Calculators</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="#">Finlogy<span>Finance</span></a>
-    <button id="themeToggle" class="secondary-btn">🌙 Theme</button>
+    <div>
+      <p class="eyebrow">FINLOGY FINANCE</p>
+      <h1>Interest Calculators</h1>
+      <p class="subtitle">Calculate simple and compound interest by month or year.</p>
+    </div>
+    <span class="brand-mark" aria-hidden="true">₹</span>
   </header>
 
-  <div class="layout">
-    <aside class="sidebar">
-      <h3>Workspace</h3>
-      <button class="nav-btn active" data-page="dashboard">Dashboard</button>
-      <button class="nav-btn" data-page="calculators">Calculators</button>
-      <button class="nav-btn" data-page="forex">Forex Converter</button>
-      <button class="nav-btn" data-page="stocks">Stock Portfolio</button>
-      <button class="nav-btn" data-page="transactions">Transactions</button>
-      <button class="nav-btn" data-page="receipts">Receipts</button>
-      <button class="nav-btn" data-page="records">Saved Records</button>
-    </aside>
+  <main class="container">
+    <nav class="tabs" aria-label="Calculator type">
+      <button class="tab active" data-panel="simple-panel" type="button">Simple Interest</button>
+      <button class="tab" data-panel="compound-panel" type="button">Compound Interest</button>
+    </nav>
 
-    <main class="content">
-      <section id="dashboard" class="page active">
-        <div class="page-heading">
-          <div>
-            <p class="eyebrow">YOUR MONEY, ORGANIZED</p>
-            <h1>Finance Dashboard</h1>
-            <p class="muted">Calculate, track and manage your finances.</p>
-          </div>
-          <button id="newTransaction" class="primary-btn">+ Add Transaction</button>
+    <section class="calculator panel active" id="simple-panel">
+      <h2>Simple Interest Calculator</h2>
+      <form id="simple-form">
+        <label for="simple-principal">Amount (₹)</label>
+        <input id="simple-principal" type="number" min="0.01" step="any" placeholder="Enter principal amount" required>
+
+        <fieldset>
+          <legend>Interest rate is entered per</legend>
+          <label class="choice"><input type="radio" name="simple-rate-unit" value="month" checked> Month</label>
+          <label class="choice"><input type="radio" name="simple-rate-unit" value="year"> Year</label>
+        </fieldset>
+        <label for="simple-rate">Interest rate (%) <span id="simple-rate-help">per month</span></label>
+        <input id="simple-rate" type="number" min="0" step="any" placeholder="e.g. 2" required>
+
+        <fieldset>
+          <legend>Duration input</legend>
+          <label class="choice"><input type="radio" name="simple-duration-mode" value="duration" checked> Enter duration</label>
+          <label class="choice"><input type="radio" name="simple-duration-mode" value="dates"> Select dates</label>
+        </fieldset>
+        <div class="duration-grid" id="simple-duration-fields">
+          <div><label for="simple-years">Years</label><input id="simple-years" type="number" min="0" step="1" placeholder="0" value="0"></div>
+          <div><label for="simple-months">Months</label><input id="simple-months" type="number" min="0" max="11" step="1" placeholder="0" value="0"></div>
+          <div><label for="simple-days">Days</label><input id="simple-days" type="number" min="0" max="30" step="1" placeholder="0" value="0"></div>
+        </div>
+        <div class="date-grid hidden" id="simple-date-fields">
+          <div><label for="simple-start">Start date</label><input id="simple-start" type="date"></div>
+          <div><label for="simple-end">End date</label><input id="simple-end" type="date"></div>
+        </div>
+        <div class="actions"><button class="secondary" type="reset">Reset</button><button class="primary" type="submit">Calculate</button></div>
+      </form>
+      <div class="results" id="simple-results" aria-live="polite">
+        <div><span>Duration</span><strong id="simple-result-duration">—</strong></div>
+        <div><span>Interest</span><strong id="simple-result-interest">—</strong></div>
+        <div><span>Total Amount</span><strong id="simple-result-total">—</strong></div>
+      </div>
+    </section>
+
+    <section class="calculator panel" id="compound-panel">
+      <h2>Compound Interest Calculator</h2>
+      <form id="compound-form">
+        <label for="compound-principal">Amount (₹)</label>
+        <input id="compound-principal" type="number" min="0.01" step="any" placeholder="Enter principal amount" required>
+
+        <fieldset>
+          <legend>Interest rate is entered per</legend>
+          <label class="choice"><input type="radio" name="compound-rate-unit" value="month" checked> Month</label>
+          <label class="choice"><input type="radio" name="compound-rate-unit" value="year"> Year</label>
+        </fieldset>
+        <label for="compound-rate">Interest rate (%) <span id="compound-rate-help">per month</span></label>
+        <input id="compound-rate" type="number" min="0" step="any" placeholder="e.g. 2" required>
+
+        <fieldset>
+          <legend>Duration input</legend>
+          <label class="choice"><input type="radio" name="compound-duration-mode" value="duration" checked> Enter duration</label>
+          <label class="choice"><input type="radio" name="compound-duration-mode" value="dates"> Select dates</label>
+        </fieldset>
+        <div class="duration-grid" id="compound-duration-fields">
+          <div><label for="compound-years">Years</label><input id="compound-years" type="number" min="0" step="1" placeholder="0" value="0"></div>
+          <div><label for="compound-months">Months</label><input id="compound-months" type="number" min="0" max="11" step="1" placeholder="0" value="0"></div>
+          <div><label for="compound-days">Days</label><input id="compound-days" type="number" min="0" max="30" step="1" placeholder="0" value="0"></div>
+        </div>
+        <div class="date-grid hidden" id="compound-date-fields">
+          <div><label for="compound-start">Start date</label><input id="compound-start" type="date"></div>
+          <div><label for="compound-end">End date</label><input id="compound-end" type="date"></div>
         </div>
 
-        <div class="stats-grid">
-          <article class="stat-card">
-            <p>Total Income</p><h2 id="incomeTotal">₹0.00</h2>
-          </article>
-          <article class="stat-card">
-            <p>Total Expenses</p><h2 id="expenseTotal">₹0.00</h2>
-          </article>
-          <article class="stat-card">
-            <p>Net Cash Flow</p><h2 id="cashFlow">₹0.00</h2>
-          </article>
-          <article class="stat-card">
-            <p>Saved Calculations</p><h2 id="calculationCount">0</h2>
-          </article>
-        </div>
-
-        <div class="panel">
-          <h2>Cash Flow Overview</h2>
-          <div class="chart-container">
-            <canvas id="cashChart"></canvas>
-          </div>
-        </div>
-
-        <div class="panel">
-          <h2>Recent Transactions</h2>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr><th>Date</th><th>Description</th><th>Type</th><th>Amount</th></tr>
-              </thead>
-              <tbody id="recentTransactions"></tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <section id="calculators" class="page">
-        <div class="page-heading">
-          <div><h1>Financial Calculators</h1><p class="muted">Calculate interest, loans and investments.</p></div>
-        </div>
-
-        <div class="panel">
-          <h2>Interest Calculator</h2>
-          <form id="interestForm" class="form-grid">
-            <label>Calculation Type
-              <select id="interestType">
-                <option value="simple">Simple Interest</option>
-                <option value="compound">Compound Interest</option>
-              </select>
-            </label>
-            <label>Principal Amount
-              <input id="principal" type="number" min="0" step="any" value="10000" required>
-            </label>
-            <label>Annual Interest Rate (%)
-              <input id="rate" type="number" min="0" max="1000" step="any" value="8" required>
-            </label>
-            <label>Duration (years)
-              <input id="years" type="number" min="0" max="1000" step="any" value="5" required>
-            </label>
-            <label>Compounding Frequency
-              <select id="frequency">
-                <option value="1">Annually</option>
-                <option value="2">Half-yearly</option>
-                <option value="4">Quarterly</option>
-                <option value="12" selected>Monthly</option>
-                <option value="365">Daily (365-day convention)</option>
-              </select>
-            </label>
-            <button class="primary-btn" type="submit">Calculate Interest</button>
-          </form>
-          <div id="interestResult" class="result-box" aria-live="polite"></div>
-          <button id="saveCalculation" class="secondary-btn" disabled>Save Calculation</button>
-        </div>
-
-        <div class="panel">
-          <h2>Loan EMI Calculator</h2>
-          <form id="emiForm" class="form-grid">
-            <label>Loan Amount
-              <input id="loanAmount" type="number" min="0" step="any" value="500000" required>
-            </label>
-            <label>Annual Interest Rate (%)
-              <input id="loanRate" type="number" min="0" max="1000" step="any" value="9" required>
-            </label>
-            <label>Loan Tenure (years)
-              <input id="loanYears" type="number" min="0.01" max="100" step="any" value="5" required>
-            </label>
-            <button class="primary-btn" type="submit">Calculate EMI</button>
-          </form>
-          <div id="emiResult" class="result-box" aria-live="polite"></div>
-        </div>
-
-        <div class="panel">
-          <h2>ROI Calculator</h2>
-          <form id="roiForm" class="form-grid">
-            <label>Initial Investment
-              <input id="roiInitial" type="number" min="0.01" step="any" value="10000" required>
-            </label>
-            <label>Final Value
-              <input id="roiFinal" type="number" min="0" step="any" value="15000" required>
-            </label>
-            <button class="primary-btn" type="submit">Calculate ROI</button>
-          </form>
-          <div id="roiResult" class="result-box" aria-live="polite"></div>
-        </div>
-      </section>
-
-      <section id="forex" class="page">
-        <h1>Forex Converter</h1>
-        <p class="muted">Use a configured exchange-rate provider for current market data.</p>
-        <div class="panel">
-          <form id="forexForm" class="form-grid">
-            <label>Amount
-              <input id="forexAmount" type="number" min="0" step="any" value="100" required>
-            </label>
-            <label>From Currency
-              <select id="fromCurrency">
-                <option value="INR">INR - Indian Rupee</option>
-                <option value="USD">USD - US Dollar</option>
-                <option value="EUR">EUR - Euro</option>
-                <option value="GBP">GBP - British Pound</option>
-                <option value="AED">AED - UAE Dirham</option>
-                <option value="OMR">OMR - Omani Rial</option>
-              </select>
-            </label>
-            <label>To Currency
-              <select id="toCurrency">
-                <option value="USD">USD - US Dollar</option>
-                <option value="INR">INR - Indian Rupee</option>
-                <option value="EUR">EUR - Euro</option>
-                <option value="GBP">GBP - British Pound</option>
-                <option value="AED">AED - UAE Dirham</option>
-                <option value="OMR">OMR - Omani Rial</option>
-              </select>
-            </label>
-            <button class="primary-btn" type="submit">Convert Currency</button>
-          </form>
-          <div id="forexResult" class="result-box" aria-live="polite"></div>
-        </div>
-      </section>
-
-      <section id="stocks" class="page">
-        <h1>Stock Portfolio</h1>
-        <p class="muted">Manually record holdings. Live stock prices require a market-data provider.</p>
-        <div class="panel">
-          <form id="stockForm" class="form-grid">
-            <label>Stock Symbol
-              <input id="stockSymbol" maxlength="20" placeholder="e.g. INFY" required>
-            </label>
-            <label>Quantity
-              <input id="stockQuantity" type="number" min="0.000001" step="any" required>
-            </label>
-            <label>Purchase Price Per Share
-              <input id="stockPrice" type="number" min="0" step="any" required>
-            </label>
-            <label>Currency
-              <select id="stockCurrency">
-                <option value="INR">INR</option>
-                <option value="USD">USD</option>
-              </select>
-            </label>
-            <button class="primary-btn" type="submit">Add Holding</button>
-          </form>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Symbol</th><th>Quantity</th><th>Purchase Price</th><th>Cost Basis</th><th>Action</th></tr></thead>
-              <tbody id="stockRows"></tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <section id="transactions" class="page">
-        <h1>Transactions</h1>
-        <div class="panel">
-          <form id="transactionForm" class="form-grid">
-            <label>Description
-              <input id="transactionDescription" maxlength="120" required>
-            </label>
-            <label>Type
-              <select id="transactionType">
-                <option value="income">Income</option>
-                <option value="expense">Expense</option>
-              </select>
-            </label>
-            <label>Amount
-              <input id="transactionAmount" type="number" min="0.01" step="any" required>
-            </label>
-            <label>Currency
-              <select id="transactionCurrency">
-                <option value="INR">INR</option>
-                <option value="USD">USD</option>
-                <option value="EUR">EUR</option>
-                <option value="AED">AED</option>
-              </select>
-            </label>
-            <label>Date
-              <input id="transactionDate" type="date" required>
-            </label>
-            <button class="primary-btn" type="submit">Save Transaction</button>
-          </form>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Date</th><th>Description</th><th>Type</th><th>Amount</th><th>Actions</th></tr></thead>
-              <tbody id="transactionRows"></tbody>
-            </table>
-          </div>
-          <button id="exportCSV" class="secondary-btn">Export CSV</button>
-        </div>
-      </section>
-
-      <section id="receipts" class="page">
-        <h1>Receipts</h1>
-        <p class="muted">Create a downloadable receipt for a saved transaction.</p>
-        <div class="panel">
-          <label>Select Transaction
-            <select id="receiptTransaction"></select>
-          </label>
-          <button id="generateReceipt" class="primary-btn">Generate PDF Receipt</button>
-          <div id="receiptResult" class="result-box" aria-live="polite"></div>
-          <div id="receiptRows"></div>
-        </div>
-      </section>
-
-      <section id="records" class="page">
-        <h1>Saved Records</h1>
-        <p class="muted">Calculation history and saved portfolio entries on this browser.</p>
-        <div class="panel">
-          <h2>Calculation History</h2>
-          <div id="calculationRows"></div>
-        </div>
-        <div class="panel">
-          <h2>Data Backup</h2>
-          <button id="backupJSON" class="secondary-btn">Download JSON Backup</button>
-          <p class="muted small">This backup includes records saved by this browser application.</p>
-        </div>
-      </section>
-    </main>
-  </div>
-
-  <footer>© <span id="year"></span> Finlogy Finance. For informational purposes only.</footer>
+        <label for="compound-frequency">Interest compounded</label>
+        <select id="compound-frequency">
+          <option value="year">Yearly</option>
+          <option value="half">Half-yearly</option>
+          <option value="quarter">Quarterly</option>
+          <option value="month">Monthly</option>
+          <option value="day">Daily</option>
+        </select>
+        <p class="hint">The selected rate is converted to an annual rate when needed, then applied using the selected compounding frequency.</p>
+        <div class="actions"><button class="secondary" type="reset">Reset</button><button class="primary" type="submit">Calculate</button></div>
+      </form>
+      <div class="results" id="compound-results" aria-live="polite">
+        <div><span>Duration</span><strong id="compound-result-duration">—</strong></div>
+        <div><span>Interest</span><strong id="compound-result-interest">—</strong></div>
+        <div><span>Total Amount</span><strong id="compound-result-total">—</strong></div>
+      </div>
+    </section>
+    <p class="disclaimer">For estimation only. Confirm the rate convention and day-count rules with your bank or lender.</p>
+  </main>
   <script src="script.js"></script>
 </body>
 </html>
