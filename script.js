@@ -660,3 +660,4 @@ renderStocks();
 renderCalculations();
 renderReceipts();
 updateDashboard();
+
