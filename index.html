@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Finlogy Finance - finance calculators, forex conversion, portfolio tracking and transaction records.">
+  <title>Finlogy Finance</title>
+  <link rel="stylesheet" href="style.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#dashboard">Finlogy <span>Finance</span></a>
+    <button id="themeToggle" class="secondary-btn" type="button">Toggle theme</button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" aria-label="Main navigation">
+      <p class="sidebar-label">WORKSPACE</p>
+      <button class="nav-btn active" data-page="dashboard">Dashboard</button>
+      <button class="nav-btn" data-page="calculators">Calculators</button>
+      <button class="nav-btn" data-page="forex">Forex</button>
+      <button class="nav-btn" data-page="stocks">Stock Portfolio</button>
+      <button class="nav-btn" data-page="transactions">Transactions</button>
+      <button class="nav-btn" data-page="receipts">Receipts</button>
+      <button class="nav-btn" data-page="records">Saved Records</button>
+    </aside>
+
+    <main class="content">
+      <section id="dashboard" class="page active">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">YOUR MONEY, ORGANIZED</p>
+            <h1>Finance Dashboard</h1>
+            <p class="muted">Calculate, track and organize your financial records.</p>
+          </div>
+          <button id="newTransaction" class="primary-btn" type="button">+ Add Transaction</button>
+        </div>
+
+        <div class="notice">
+          <strong>Prototype notice:</strong> records are saved in this browser only. Do not use this version as secure financial storage.
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card"><p>Income (INR)</p><h2 id="incomeTotal">₹0.00</h2></article>
+          <article class="stat-card"><p>Expenses (INR)</p><h2 id="expenseTotal">₹0.00</h2></article>
+          <article class="stat-card"><p>Net Cash Flow (INR)</p><h2 id="cashFlow">₹0.00</h2></article>
+          <article class="stat-card"><p>Saved Calculations</p><h2 id="calculationCount">0</h2></article>
+        </div>
+
+        <section class="panel">
+          <h2>Cash Flow Overview</h2>
+          <div class="chart-container"><canvas id="cashChart" aria-label="Income and expense chart"></canvas></div>
+        </section>
+
+        <section class="panel">
+          <h2>Recent Transactions</h2>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Date</th><th>Description</th><th>Type</th><th>Amount</th></tr></thead>
+              <tbody id="recentTransactions"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <section id="calculators" class="page">
+        <h1>Financial Calculators</h1>
+        <p class="muted">Illustrative calculations. Actual financial products may use different terms and fees.</p>
+
+        <section class="panel">
+          <h2>Simple and Compound Interest</h2>
+          <form id="interestForm" class="form-grid">
+            <label>Calculation type
+              <select id="interestType"><option value="simple">Simple interest</option><option value="compound">Compound interest</option></select>
+            </label>
+            <label>Principal amount (INR)<input id="principal" type="number" min="0" step="any" value="10000" required></label>
+            <label>Annual rate (%)<input id="rate" type="number" min="0" max="1000" step="any" value="8" required></label>
+            <label>Duration (years)<input id="years" type="number" min="0" max="1000" step="any" value="5" required></label>
+            <label>Compounding frequency
+              <select id="frequency">
+                <option value="1">Annually</option><option value="2">Half-yearly</option>
+                <option value="4">Quarterly</option><option value="12" selected>Monthly</option>
+                <option value="365">Daily (365-day convention)</option>
+              </select>
+            </label>
+            <button class="primary-btn" type="submit">Calculate Interest</button>
+          </form>
+          <div id="interestResult" class="result-box" aria-live="polite"></div>
+          <button id="saveCalculation" class="secondary-btn" type="button" disabled>Save Calculation</button>
+        </section>
+
+        <section class="panel">
+          <h2>Loan EMI</h2>
+          <form id="emiForm" class="form-grid">
+            <label>Loan amount (INR)<input id="loanAmount" type="number" min="0.01" step="any" value="500000" required></label>
+            <label>Annual interest rate (%)<input id="loanRate" type="number" min="0" max="1000" step="any" value="9" required></label>
+            <label>Tenure (years)<input id="loanYears" type="number" min="0.01" max="100" step="any" value="5" required></label>
+            <button class="primary-btn" type="submit">Calculate EMI</button>
+          </form>
+          <div id="emiResult" class="result-box" aria-live="polite"></div>
+        </section>
+
+        <section class="panel">
+          <h2>Return on Investment (ROI)</h2>
+          <form id="roiForm" class="form-grid">
+            <label>Initial investment<input id="roiInitial" type="number" min="0.01" step="any" value="10000" required></label>
+            <label>Final value<input id="roiFinal" type="number" min="0" step="any" value="15000" required></label>
+            <button class="primary-btn" type="submit">Calculate ROI</button>
+          </form>
+          <div id="roiResult" class="result-box" aria-live="polite"></div>
+        </section>
+      </section>
+
+      <section id="forex" class="page">
+        <h1>Forex Converter</h1>
+        <p class="muted">Rates are indicative and may be delayed. Fees and provider spreads are not included.</p>
+        <section class="panel">
+          <form id="forexForm" class="form-grid">
+            <label>Amount<input id="forexAmount" type="number" min="0" step="any" value="100" required></label>
+            <label>From currency
+              <select id="fromCurrency">
+                <option value="INR">INR — Indian Rupee</option><option value="USD">USD — US Dollar</option>
+                <option value="EUR">EUR — Euro</option><option value="GBP">GBP — British Pound</option>
+                <option value="AED">AED — UAE Dirham</option><option value="OMR">OMR — Omani Rial</option>
+                <option value="JPY">JPY — Japanese Yen</option><option value="AUD">AUD — Australian Dollar</option>
+              </select>
+            </label>
+            <label>To currency
+              <select id="toCurrency">
+                <option value="USD">USD — US Dollar</option><option value="INR">INR — Indian Rupee</option>
+                <option value="EUR">EUR — Euro</option><option value="GBP">GBP — British Pound</option>
+                <option value="AED">AED — UAE Dirham</option><option value="OMR">OMR — Omani Rial</option>
+                <option value="JPY">JPY — Japanese Yen</option><option value="AUD">AUD — Australian Dollar</option>
+              </select>
+            </label>
+            <button class="primary-btn" type="submit">Convert Currency</button>
+          </form>
+          <div id="forexResult" class="result-box" aria-live="polite"></div>
+        </section>
+      </section>
+
+      <section id="stocks" class="page">
+        <h1>Stock Portfolio</h1>
+        <p class="muted">Manual holdings only; market prices are not fetched in this prototype.</p>
+        <section class="panel">
+          <form id="stockForm" class="form-grid">
+            <label>Stock symbol<input id="stockSymbol" maxlength="20" placeholder="e.g. INFY" required></label>
+            <label>Quantity<input id="stockQuantity" type="number" min="0.000001" step="any" required></label>
+            <label>Purchase price per share<input id="stockPrice" type="number" min="0" step="any" required></label>
+            <label>Currency<select id="stockCurrency"><option value="INR">INR</option><option value="USD">USD</option></select></label>
+            <button class="primary-btn" type="submit">Add Holding</button>
+          </form>
+          <div class="table-wrap">
+            <table><thead><tr><th>Symbol</th><th>Quantity</th><th>Price</th><th>Cost Basis</th><th>Action</th></tr></thead><tbody id="stockRows"></tbody></table>
+          </div>
+        </section>
+      </section>
+
+      <section id="transactions" class="page">
+        <h1>Transactions</h1>
+        <section class="panel">
+          <form id="transactionForm" class="form-grid">
+            <label>Description<input id="transactionDescription" maxlength="120" required></label>
+            <label>Type<select id="transactionType"><option value="income">Income</option><option value="expense">Expense</option></select></label>
+            <label>Amount<input id="transactionAmount" type="number" min="0.01" step="any" required></label>
+            <label>Currency<select id="transactionCurrency"><option value="INR">INR</option><option value="USD">USD</option><option value="EUR">EUR</option><option value="AED">AED</option><option value="OMR">OMR</option></select></label>
+            <label>Date<input id="transactionDate" type="date" required></label>
+            <button class="primary-btn" type="submit">Save Transaction</button>
+          </form>
+          <div class="table-wrap">
+            <table><thead><tr><th>Date</th><th>Description</th><th>Type</th><th>Amount</th><th>Actions</th></tr></thead><tbody id="transactionRows"></tbody></table>
+          </div>
+          <button id="exportCSV" class="secondary-btn" type="button">Export CSV</button>
+        </section>
+      </section>
+
+      <section id="receipts" class="page">
+        <h1>Receipts</h1>
+        <p class="muted">PDFs are generated from saved browser records and are not payment confirmations.</p>
+        <section class="panel">
+          <label>Select transaction<select id="receiptTransaction"></select></label>
+          <button id="generateReceipt" class="primary-btn top-gap" type="button">Generate PDF Receipt</button>
+          <div id="receiptResult" class="result-box" aria-live="polite"></div>
+          <div id="receiptRows"></div>
+        </section>
+      </section>
+
+      <section id="records" class="page">
+        <h1>Saved Records</h1>
+        <section class="panel"><h2>Calculation History</h2><div id="calculationRows"></div></section>
+        <section class="panel">
+          <h2>Data Backup</h2>
+          <button id="backupJSON" class="secondary-btn" type="button">Download JSON Backup</button>
+          <p class="muted small">Keep backups private. This file may contain financial information.</p>
+        </section>
+      </section>
+    </main>
+  </div>
+  <footer>© <span id="year"></span> Finlogy Finance · For informational purposes only</footer>
+</body>
+</html>
